@@ -4,6 +4,7 @@ import com.dietrich.psiuapikt.controller.org.req.OrgEmployeeRequest
 import com.dietrich.psiuapikt.controller.user.req.EmployeeUpdateRequest
 import com.dietrich.psiuapikt.exception.NotFoundException
 import com.dietrich.psiuapikt.model.user.Employee
+import com.dietrich.psiuapikt.model.user.Role
 import com.dietrich.psiuapikt.model.user.User
 import com.dietrich.psiuapikt.repository.user.EmployeeRepository
 import com.dietrich.psiuapikt.repository.user.UserRepository
@@ -34,7 +35,8 @@ class EmployeeService(
         val user = User(
             request.name,
             request.email,
-            passwordEncoder.encode(request.password)
+            passwordEncoder.encode(request.password),
+            Role.EMPLOYEE
         )
         userRepository.saveAndFlush(user)
 

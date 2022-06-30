@@ -1,6 +1,7 @@
 package com.dietrich.psiuapikt.security
 
 import com.dietrich.psiuapikt.repository.user.UserRepository
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -17,7 +18,7 @@ class CustomUserDetailsService(
             user.email,
             user.password,
             user.active,
-            user.roles
+            mutableListOf(SimpleGrantedAuthority(user.role.name))
         )
     }
 }

@@ -4,6 +4,7 @@ import com.dietrich.psiuapikt.controller.org.req.OrgAdminRequest
 import com.dietrich.psiuapikt.controller.user.req.AdminUpdateRequest
 import com.dietrich.psiuapikt.exception.NotFoundException
 import com.dietrich.psiuapikt.model.user.Admin
+import com.dietrich.psiuapikt.model.user.Role
 import com.dietrich.psiuapikt.model.user.User
 import com.dietrich.psiuapikt.repository.user.AdminRepository
 import com.dietrich.psiuapikt.repository.user.UserRepository
@@ -34,7 +35,8 @@ class AdminService(
         val user = User(
             request.name,
             request.email,
-            passwordEncoder.encode(request.password)
+            passwordEncoder.encode(request.password),
+            Role.ADMIN
         )
         userRepository.saveAndFlush(user)
 

@@ -5,6 +5,7 @@ import com.dietrich.psiuapikt.controller.org.req.RegisterOrgRequest
 import com.dietrich.psiuapikt.exception.NotFoundException
 import com.dietrich.psiuapikt.model.org.Org
 import com.dietrich.psiuapikt.model.user.Admin
+import com.dietrich.psiuapikt.model.user.Role
 import com.dietrich.psiuapikt.model.user.User
 import com.dietrich.psiuapikt.repository.org.OrgRepository
 import com.dietrich.psiuapikt.repository.user.AdminRepository
@@ -29,7 +30,7 @@ class OrgService(
             request.ownerName,
             request.ownerEmail,
             request.ownerPassword,
-            true
+            Role.ADMIN
         )
         user = userRepository.saveAndFlush(user)
 

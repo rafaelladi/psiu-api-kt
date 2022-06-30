@@ -1,8 +1,6 @@
 package com.dietrich.psiuapikt.security
 
-import com.dietrich.psiuapikt.model.user.Role
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class CustomUserDetails(
@@ -10,12 +8,10 @@ class CustomUserDetails(
     private val email: String,
     private val pwd: String,
     private val active: Boolean,
-    private val roles: Set<Role>
+    private val roles: MutableList<GrantedAuthority>
 ) : UserDetails {
 
-    override fun getAuthorities(): MutableList<GrantedAuthority> = roles.map {
-        SimpleGrantedAuthority(it.name)
-    }.toMutableList()
+    override fun getAuthorities(): MutableList<GrantedAuthority> = roles
 
     override fun getPassword(): String = pwd
 

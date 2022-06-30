@@ -3,6 +3,7 @@ package com.dietrich.psiuapikt.service.auth
 import com.dietrich.psiuapikt.controller.auth.req.SignInRequest
 import com.dietrich.psiuapikt.controller.auth.req.SignUpRequest
 import com.dietrich.psiuapikt.controller.auth.res.AuthResponse
+import com.dietrich.psiuapikt.model.user.Role
 import com.dietrich.psiuapikt.model.user.User
 import com.dietrich.psiuapikt.repository.user.UserRepository
 import com.dietrich.psiuapikt.security.JwtTokenProvider
@@ -25,7 +26,8 @@ class AuthService(
         val user = User(
             request.name,
             request.email,
-            passwordEncoder.encode(request.password)
+            passwordEncoder.encode(request.password),
+            Role.USER
         )
 
         userRepository.save(user)
