@@ -66,7 +66,7 @@ class EmployeeController(
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun update(@PathVariable id: Long, request: EmployeeUpdateRequest): EmployeeResponse {
+    fun update(@PathVariable id: Long, @RequestBody request: EmployeeUpdateRequest): EmployeeResponse {
         return employeeService.update(id, request).let {
             EmployeeResponse(
                 it.user.name,
@@ -95,7 +95,7 @@ class EmployeeController(
         employeeService.delete(id)
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{id}/appointments")
     @ResponseStatus(HttpStatus.OK)
     fun appointments(@PathVariable id: Long): List<EmployeeAppointmentResponse> {
         return appointmentService.findByEmployee(id).map {

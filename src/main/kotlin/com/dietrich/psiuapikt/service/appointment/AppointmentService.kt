@@ -22,4 +22,8 @@ class AppointmentService(
     fun findByEmployee(id: Long): List<Appointment> {
         return appointmentRepository.findByEmployeeId(id)
     }
+
+    fun findByUser(id: Long): List<Appointment> {
+        return appointmentRepository.findByUserId(id)
+    }
 }
