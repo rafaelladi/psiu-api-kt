@@ -1,7 +1,7 @@
 package com.dietrich.psiuapikt.service.user
 
 import com.dietrich.psiuapikt.controller.org.req.OrgAdminRequest
-import com.dietrich.psiuapikt.controller.user.AdminUpdateRequest
+import com.dietrich.psiuapikt.controller.user.req.AdminUpdateRequest
 import com.dietrich.psiuapikt.exception.NotFoundException
 import com.dietrich.psiuapikt.model.user.Admin
 import com.dietrich.psiuapikt.model.user.User

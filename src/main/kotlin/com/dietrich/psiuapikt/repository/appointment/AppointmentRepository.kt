@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
     fun findByProjectOrgId(id: Long): List<Appointment>
     fun findByProjectId(id: Long): List<Appointment>
+    fun findByEmployeeId(id: Long): List<Appointment>
 }

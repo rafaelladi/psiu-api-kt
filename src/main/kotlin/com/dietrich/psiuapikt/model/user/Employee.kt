@@ -3,6 +3,7 @@ package com.dietrich.psiuapikt.model.user
 import com.dietrich.psiuapikt.model.appointment.Appointment
 import com.dietrich.psiuapikt.model.org.Org
 import com.dietrich.psiuapikt.model.org.Project
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -14,7 +15,7 @@ import javax.persistence.OneToOne
 
 @Entity
 class Employee(
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE])
     @MapsId
     val user: User,
 

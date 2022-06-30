@@ -1,5 +1,6 @@
 package com.dietrich.psiuapikt.controller.user
 
+import com.dietrich.psiuapikt.controller.user.req.AdminUpdateRequest
 import com.dietrich.psiuapikt.controller.user.res.AdminResponse
 import com.dietrich.psiuapikt.service.user.AdminService
 import org.springframework.http.HttpStatus
@@ -72,6 +73,5 @@ class AdminController(
     fun delete(@PathVariable id: Long) {
         adminService.delete(id)
     }
-
 
 }

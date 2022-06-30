@@ -30,7 +30,7 @@ class Appointment(
 
     val note: String?,
 
-    val rating: Float?,
+    val rating: Double?,
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")

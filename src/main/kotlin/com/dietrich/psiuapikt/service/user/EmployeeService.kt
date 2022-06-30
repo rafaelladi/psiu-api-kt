@@ -1,6 +1,7 @@
 package com.dietrich.psiuapikt.service.user
 
 import com.dietrich.psiuapikt.controller.org.req.OrgEmployeeRequest
+import com.dietrich.psiuapikt.controller.user.req.EmployeeUpdateRequest
 import com.dietrich.psiuapikt.exception.NotFoundException
 import com.dietrich.psiuapikt.model.user.Employee
 import com.dietrich.psiuapikt.model.user.User
@@ -52,5 +53,20 @@ class EmployeeService(
 
     fun find(id: Long): Employee {
         return employeeRepository.findByIdOrNull(id) ?: throw NotFoundException("Employee", "id", id)
+    }
+
+    fun update(id: Long, request: EmployeeUpdateRequest): Employee {
+        val employee = find(id)
+        request.name?.let {
+            employee.user.name = request.name
+        }
+
+        return employeeRepository.save(employee)
+    }
+
+    fun delete(id: Long) {
+        val employee = find(id)
+        employee.user.active = false
+        employeeRepository.save(employee)
     }
 }

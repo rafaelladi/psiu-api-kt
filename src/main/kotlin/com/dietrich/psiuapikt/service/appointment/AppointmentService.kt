@@ -18,4 +18,8 @@ class AppointmentService(
     fun findByProject(id: Long): List<Appointment> {
         return appointmentRepository.findByProjectId(id)
     }
+
+    fun findByEmployee(id: Long): List<Appointment> {
+        return appointmentRepository.findByEmployeeId(id)
+    }
 }
