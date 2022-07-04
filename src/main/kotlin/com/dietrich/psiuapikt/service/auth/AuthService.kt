@@ -5,8 +5,12 @@ import com.dietrich.psiuapikt.controller.auth.req.SignUpRequest
 import com.dietrich.psiuapikt.controller.auth.res.AuthResponse
 import com.dietrich.psiuapikt.model.user.Role
 import com.dietrich.psiuapikt.model.user.User
+import com.dietrich.psiuapikt.repository.user.AdminRepository
+import com.dietrich.psiuapikt.repository.user.EmployeeRepository
 import com.dietrich.psiuapikt.repository.user.UserRepository
 import com.dietrich.psiuapikt.security.JwtTokenProvider
+import com.dietrich.psiuapikt.security.TokenUser
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -18,7 +22,9 @@ class AuthService(
     val authenticationManager: AuthenticationManager,
     val passwordEncoder: PasswordEncoder,
     val tokenProvider: JwtTokenProvider,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val adminRepository: AdminRepository,
+    val employeeRepository: EmployeeRepository
 ) {
     fun signIn(request: SignInRequest) = authenticate(request.email, request.password)
 
@@ -29,7 +35,7 @@ class AuthService(
             passwordEncoder.encode(request.password),
             Role.USER
         )
-
+        //TODO CHECK IF EMAIL IS ALREADY REGISTERED
         userRepository.save(user)
 
         return authenticate(request.email, request.password)
@@ -42,7 +48,19 @@ class AuthService(
 
         SecurityContextHolder.getContext().authentication = authentication
 
-        val token = tokenProvider.generateToken(authentication)
-        return AuthResponse(token)
+        val user = userRepository.findByEmail(email)!!
+        val admin = adminRepository.findByIdOrNull(user.id)
+        val employee = employeeRepository.findByIdOrNull(user.id)
+        val tokenUser = TokenUser(
+            user.email,
+            admin?.org?.id,
+            employee?.project?.id,
+            user.role.name,
+            user.id
+        )
+
+        return AuthResponse(tokenProvider.generateToken(
+            authentication, user.id, user.role.name, admin?.org?.id, employee?.project?.id
+        ))
     }
 }

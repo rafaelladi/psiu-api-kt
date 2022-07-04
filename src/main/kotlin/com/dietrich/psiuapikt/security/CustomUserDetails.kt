@@ -4,7 +4,9 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class CustomUserDetails(
-    private val id: Long,
+    val id: Long,
+    val orgId: Long?,
+    val projectId: Long?,
     private val email: String,
     private val pwd: String,
     private val active: Boolean,

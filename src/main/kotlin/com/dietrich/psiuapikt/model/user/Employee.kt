@@ -33,6 +33,9 @@ class Employee(
     @Column(nullable = false)
     var averageRating: Double = 5.0,
 
+    @Column(nullable = false)
+    var online: Boolean = false,
+
     @Id
     val id: Long = 0L
 )

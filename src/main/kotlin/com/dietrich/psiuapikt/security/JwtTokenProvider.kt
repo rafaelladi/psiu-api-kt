@@ -15,7 +15,7 @@ class JwtTokenProvider {
     @Value("\${app.jwt.expiration}")
     var expiration: Int = 0
 
-    fun generateToken(authentication: Authentication): String {
+    fun generateToken(authentication: Authentication, id: Long, role: String, orgId: Long? = null, projectId: Long? = null): String {
         val username = authentication.name
         val currentDate = Date()
         val expirationDate = Date(currentDate.time + expiration)
@@ -24,17 +24,44 @@ class JwtTokenProvider {
             .setSubject(username)
             .setIssuedAt(currentDate)
             .setExpiration(expirationDate)
+            .setClaims(mapOf(
+                "userId" to id,
+                "orgId" to orgId,
+                "projectId" to projectId,
+                "role" to role,
+                "sub" to username
+            ))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact()
     }
 
-    fun getUsernameFromToken(token: String): String {
-        val claims = Jwts.parser()
+    private fun getTokenBody(token: String): Claims {
+        return Jwts.parser()
             .setSigningKey(secret)
             .parseClaimsJws(token)
             .body
+    }
 
+    fun getUsernameFromToken(token: String): String {
+        val claims = getTokenBody(token)
         return claims.subject
+    }
+
+    fun getUserDataFromToken(token: String): TokenUser {
+        val claims = getTokenBody(token)
+        val email = claims.subject
+        val id = (claims["userId"] as Int).toLong()
+        val orgId = (claims["orgId"] as? Int)?.toLong()
+        val projectId = (claims["projectId"] as? Int)?.toLong()
+        val role = claims["role"] as String
+
+        return TokenUser(
+            email,
+            orgId,
+            projectId,
+            role,
+            id
+        )
     }
 
     fun validateToken(token: String): Boolean {

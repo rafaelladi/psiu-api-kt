@@ -71,4 +71,8 @@ class EmployeeService(
         employee.user.active = false
         employeeRepository.save(employee)
     }
+
+    fun findByProjectAndOnline(id: Long): List<Employee> {
+        return employeeRepository.findByProjectIdAndOnline(id)
+    }
 }

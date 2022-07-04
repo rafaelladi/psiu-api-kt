@@ -1,6 +1,7 @@
 package com.dietrich.psiuapikt.security
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
@@ -20,8 +21,16 @@ class JwtAuthenticationFilter(
         val token = getJwtFromRequest(request)
 
         if(token != null && tokenProvider.validateToken(token)) {
-            val username = tokenProvider.getUsernameFromToken(token)
-            val userDetails = userDetailsService.loadUserByUsername(username)
+            val userData = tokenProvider.getUserDataFromToken(token)
+            val userDetails = CustomUserDetails(
+                userData.id,
+                userData.orgId,
+                userData.projectId,
+                userData.email,
+                "",
+                true,
+                mutableListOf(SimpleGrantedAuthority(userData.role))
+            )
             //TODO optimize so there is no need to query the user every request
 
             val authenticationToken = UsernamePasswordAuthenticationToken(
@@ -39,7 +48,7 @@ class JwtAuthenticationFilter(
 
     private fun getJwtFromRequest(request: HttpServletRequest): String? {
         val bearerToken = request.getHeader("Authorization") ?: ""
-        if(bearerToken.isBlank() && bearerToken.startsWith("Bearer ")) {
+        if(bearerToken.isNotBlank() && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7)
         }
 

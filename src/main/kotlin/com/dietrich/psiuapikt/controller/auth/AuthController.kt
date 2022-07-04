@@ -15,10 +15,12 @@ class AuthController(
     val authService: AuthService
 ) {
     @PostMapping("sign-in")
-    fun signIn(@RequestBody request: SignInRequest): AuthResponse =
-        authService.signIn(request)
+    fun signIn(@RequestBody request: SignInRequest): AuthResponse {
+        return authService.signIn(request)
+    }
 
     @PostMapping("sign-up")
-    fun signUp(@RequestBody request: SignUpRequest): AuthResponse =
-        authService.signUp(request)
+    fun signUp(@RequestBody request: SignUpRequest): AuthResponse {
+        return authService.signUp(request)
+    }
 }

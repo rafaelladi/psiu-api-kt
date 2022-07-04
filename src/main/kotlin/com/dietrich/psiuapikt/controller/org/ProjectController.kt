@@ -101,6 +101,23 @@ class ProjectController(
         }
     }
 
+    @GetMapping("{id}/employees/online")
+    @ResponseStatus(HttpStatus.OK)
+    fun onlineEmployees(@PathVariable id: Long): List<ProjectEmployeeResponse> {
+        return employeeService.findByProjectAndOnline(id).map {
+            ProjectEmployeeResponse(
+                it.user.name,
+                it.user.email,
+                it.averageRating,
+                ProjectEmployeeResponse.Org(
+                    it.org.name,
+                    it.org.id
+                ),
+                it.id
+            )
+        }
+    }
+
     @GetMapping("{id}/appointments")
     @ResponseStatus(HttpStatus.OK)
     fun appointments(@PathVariable id: Long): List<ProjectAppointmentResponse> {

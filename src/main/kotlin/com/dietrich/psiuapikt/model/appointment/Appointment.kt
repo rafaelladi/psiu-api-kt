@@ -10,7 +10,7 @@ import javax.persistence.*
 @Entity
 class Appointment(
     @Column(nullable = false)
-    val start: LocalDateTime,
+    val start: LocalDateTime, //should only be filled if it is a scheduled appointment
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -28,9 +28,9 @@ class Appointment(
     @JoinColumn(nullable = false)
     val user: User,
 
-    val note: String?,
+    val note: String? = null,
 
-    val rating: Double?,
+    val rating: Double? = null,
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
