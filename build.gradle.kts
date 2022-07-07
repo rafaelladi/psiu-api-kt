@@ -44,6 +44,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+springBoot {
+    mainClass.set("com.dietrich.psiu2.Psiu2ApplicationKt")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
