@@ -1,1 +1,1 @@
-web: ./gradlew bootRun
+web: java -jar build/libs/psiu-api-kt-0.0.1-SNAPSHOT-plain.jar --server.port=$PORT
