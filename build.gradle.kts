@@ -45,7 +45,7 @@ tasks.withType<KotlinCompile> {
 }
 
 springBoot {
-    mainClass.set("com.dietrich.psiu2.PsiuApiKtApplicationKt")
+    mainClass.set("com.dietrich.psiuapikt.PsiuApiKtApplicationKt")
 }
 
 //tasks.withType<Jar> {
