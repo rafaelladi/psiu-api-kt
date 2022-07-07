@@ -1,1 +1,2 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/psiu-api-kt-0.0.1.jar
+release: ./gradlew bootJar
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/psiu-api-kt-0.0.1-SNAPSHOT.jar
