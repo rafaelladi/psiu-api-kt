@@ -44,15 +44,15 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-//springBoot {
-//    mainClass.set("com.dietrich.psiu2.Psiu2ApplicationKt")
-//}
-
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-class"] = "com.dietrich.psiu2.Psiu2ApplicationKt"
-    }
+springBoot {
+    mainClass.set("com.dietrich.psiu2.PsiuApiKtApplicationKt")
 }
+
+//tasks.withType<Jar> {
+//    manifest {
+//        attributes["Main-class"] = "com.dietrich.psiu2.Psiu2ApplicationKt"
+//    }
+//}
 
 tasks.withType<Test> {
     useJUnitPlatform()
