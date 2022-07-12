@@ -16,9 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.filter.CorsFilter
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @EnableWebSecurity
@@ -51,18 +50,12 @@ class SecurityConfig(
    }
 
     @Bean
-    fun corsFilter(): CorsFilter {
-        val source = UrlBasedCorsConfigurationSource()
-        val config = CorsConfiguration()
-        config.allowCredentials = true
-        config.addAllowedOrigin(CorsConfiguration.ALL)
-        config.addAllowedHeader(CorsConfiguration.ALL)
-        config.addAllowedMethod(CorsConfiguration.ALL)
-        config.addExposedHeader("Authorization")
-
-        source.registerCorsConfiguration("/**", config)
-
-        return CorsFilter(source)
+    fun corsConfigurer(): WebMvcConfigurer {
+        return object: WebMvcConfigurer {
+            override fun addCorsMappings(registry: CorsRegistry) {
+                registry.addMapping("/**").allowedOrigins("*")
+            }
+        }
     }
 
     @Bean
