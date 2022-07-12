@@ -48,12 +48,6 @@ springBoot {
     mainClass.set("com.dietrich.psiuapikt.PsiuApiKtApplicationKt")
 }
 
-//tasks.withType<Jar> {
-//    manifest {
-//        attributes["Main-class"] = "com.dietrich.psiuapikt.PsiuApiKtApplicationKt"
-//    }
-//}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }

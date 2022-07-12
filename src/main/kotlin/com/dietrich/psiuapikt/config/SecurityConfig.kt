@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 
 @Configuration
 @EnableWebSecurity
@@ -27,7 +30,8 @@ class SecurityConfig(
 ) {
    @Bean
    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-       http
+       return http
+           .cors().and()
            .csrf().disable()
            .exceptionHandling()
            .authenticationEntryPoint(authenticationEntryPoint)
@@ -43,9 +47,23 @@ class SecurityConfig(
            .anyRequest().authenticated()
            .and()
            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
-
-       return http.build()
+           .build()
    }
+
+    @Bean
+    fun corsFilter(): CorsFilter {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOrigin(CorsConfiguration.ALL)
+        config.addAllowedHeader(CorsConfiguration.ALL)
+        config.addAllowedMethod(CorsConfiguration.ALL)
+        config.addExposedHeader("Authorization")
+
+        source.registerCorsConfiguration("/**", config)
+
+        return CorsFilter(source)
+    }
 
     @Bean
     fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
