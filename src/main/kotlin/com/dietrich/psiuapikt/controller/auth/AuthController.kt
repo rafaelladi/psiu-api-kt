@@ -1,5 +1,6 @@
 package com.dietrich.psiuapikt.controller.auth
 
+import com.dietrich.psiuapikt.controller.auth.req.RefreshRequest
 import com.dietrich.psiuapikt.controller.auth.req.SignInRequest
 import com.dietrich.psiuapikt.controller.auth.req.SignUpRequest
 import com.dietrich.psiuapikt.controller.auth.res.AuthResponse
@@ -22,5 +23,10 @@ class AuthController(
     @PostMapping("sign-up")
     fun signUp(@RequestBody request: SignUpRequest): AuthResponse {
         return authService.signUp(request)
+    }
+
+    @PostMapping("refresh-token")
+    fun refreshToken(@RequestBody request: RefreshRequest): AuthResponse {
+        return authService.refreshToken(request.refreshToken)
     }
 }

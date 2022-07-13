@@ -48,19 +48,25 @@ class AuthService(
 
         SecurityContextHolder.getContext().authentication = authentication
 
+        return tokenProvider.generateToken(getTokenUser(email))
+    }
+
+    fun getTokenUser(email: String): TokenUser {
         val user = userRepository.findByEmail(email)!!
         val admin = adminRepository.findByIdOrNull(user.id)
         val employee = employeeRepository.findByIdOrNull(user.id)
-        val tokenUser = TokenUser(
+        return TokenUser(
             user.email,
             admin?.org?.id,
             employee?.project?.id,
             user.role.name,
             user.id
         )
+    }
 
-        return AuthResponse(tokenProvider.generateToken(
-            authentication, user.id, user.role.name, admin?.org?.id, employee?.project?.id
-        ))
+    fun refreshToken(refreshToken: String): AuthResponse {
+        val username = tokenProvider.getUsernameFromToken(refreshToken)
+        val tokenUser = getTokenUser(username)
+        return tokenProvider.generateToken(tokenUser)
     }
 }
