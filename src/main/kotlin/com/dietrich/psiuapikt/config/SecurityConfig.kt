@@ -1,9 +1,6 @@
 package com.dietrich.psiuapikt.config
 
-import com.dietrich.psiuapikt.security.CustomUserDetailsService
-import com.dietrich.psiuapikt.security.JwtAuthenticationEntryPoint
-import com.dietrich.psiuapikt.security.JwtAuthenticationFilter
-import com.dietrich.psiuapikt.security.JwtTokenProvider
+import com.dietrich.psiuapikt.security.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -24,30 +21,35 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val tokenProvider: JwtTokenProvider,
-    private val userDetailsService: CustomUserDetailsService,
     private val authenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
-   @Bean
-   fun filterChain(http: HttpSecurity): SecurityFilterChain {
-       return http
-           .cors().and()
-           .csrf().disable()
-           .exceptionHandling()
-           .authenticationEntryPoint(authenticationEntryPoint)
-           .and()
-           .sessionManagement()
-           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-           .and()
-           .authorizeRequests()
-           .antMatchers("/auth/**").permitAll()
-           .antMatchers("/swagger-ui.html").permitAll()
-           .antMatchers("/swagger-ui/**").permitAll()
-           .antMatchers("/api-docs/**").permitAll()
-           .anyRequest().authenticated()
-           .and()
-           .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
-           .build()
-   }
+    @Bean
+    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+        return http
+            .cors().and()
+            .csrf().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("/auth/**").permitAll()
+            .antMatchers("/swagger-ui.html").permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/api-docs/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(websocketRequestsFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            .build()
+    }
+
+    @Bean
+    fun websocketRequestsFilter(): WebsocketRequestsFilter {
+        return WebsocketRequestsFilter()
+    }
 
     @Bean
     fun corsConfigurer(): WebMvcConfigurer {
@@ -60,7 +62,7 @@ class SecurityConfig(
 
     @Bean
     fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(tokenProvider, userDetailsService)
+        return JwtAuthenticationFilter(tokenProvider)
     }
 
     @Bean

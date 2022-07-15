@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class JwtAuthenticationFilter(
-    val tokenProvider: JwtTokenProvider,
-    val userDetailsService: CustomUserDetailsService
+    val tokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -44,6 +43,10 @@ class JwtAuthenticationFilter(
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        return "/messages" == request.servletPath || "/messages/" == request.servletPath
     }
 
     private fun getJwtFromRequest(request: HttpServletRequest): String? {
