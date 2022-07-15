@@ -31,14 +31,34 @@ class OrgController(
         }
     }
 
+    @GetMapping("requests")
+    @ResponseStatus(HttpStatus.OK)
+    fun findRequests(): List<OrgNotEvaluatedResponse> {
+        return orgService.findRequests().map {
+            OrgNotEvaluatedResponse(
+                it.name,
+                it.description,
+                it.ownerName,
+                it.ownerEmail,
+                it.id
+            )
+        }
+    }
+
+    @PutMapping("requests/{id}/accept")
+    @ResponseStatus(HttpStatus.OK)
+    fun accept(@PathVariable id: Long, @RequestParam accepted: Boolean): Long? {
+        return orgService.accept(id, accepted)
+    }
+
     @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@RequestBody request: RegisterOrgRequest): OrgRegisterResponse {
         return orgService.register(request).let {
             OrgRegisterResponse(
                 it.name,
-                it.owner!!.user.name,
-                it.owner!!.user.email
+                it.ownerName,
+                it.ownerEmail
             )
         }
     }
