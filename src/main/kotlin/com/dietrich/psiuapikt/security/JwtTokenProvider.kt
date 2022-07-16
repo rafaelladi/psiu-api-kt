@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 data class Token(
-    val token: String,
+    val accessToken: String,
     val refreshToken: String,
     val tokenType: String = "Bearer"
 )
