@@ -9,7 +9,6 @@ import com.dietrich.psiuapikt.repository.user.AdminRepository
 import com.dietrich.psiuapikt.repository.user.EmployeeRepository
 import com.dietrich.psiuapikt.repository.user.UserRepository
 import com.dietrich.psiuapikt.security.JwtTokenProvider
-import com.dietrich.psiuapikt.security.TokenUser
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -48,25 +47,37 @@ class AuthService(
 
         SecurityContextHolder.getContext().authentication = authentication
 
-        return tokenProvider.generateToken(getTokenUser(email))
+        val userData = getUserData(email)
+        val token = tokenProvider.generateToken(userData)
+        return AuthResponse(
+            userData,
+            token
+        )
     }
 
-    fun getTokenUser(email: String): TokenUser {
+    fun getUserData(email: String): AuthResponse.UserData {
         val user = userRepository.findByEmail(email)!!
         val admin = adminRepository.findByIdOrNull(user.id)
         val employee = employeeRepository.findByIdOrNull(user.id)
-        return TokenUser(
+        return AuthResponse.UserData(
+            user.name,
             user.email,
+            user.role.name,
             admin?.org?.id,
             employee?.project?.id,
-            user.role.name,
+            admin?.owner ?: false,
             user.id
         )
     }
 
     fun refreshToken(refreshToken: String): AuthResponse {
         val username = tokenProvider.getUsernameFromToken(refreshToken)
-        val tokenUser = getTokenUser(username)
-        return tokenProvider.generateToken(tokenUser)
+        val userData = getUserData(username)
+        val token = tokenProvider.generateToken(userData)
+
+        return AuthResponse(
+            userData,
+            token
+        )
     }
 }

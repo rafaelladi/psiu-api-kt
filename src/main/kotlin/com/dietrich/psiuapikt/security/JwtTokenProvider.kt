@@ -8,6 +8,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
 
+data class Token(
+    val token: String,
+    val refreshToken: String,
+    val tokenType: String = "Bearer"
+)
+
 @Component
 class JwtTokenProvider {
     @Value("\${app.jwt.secret}")
@@ -19,40 +25,44 @@ class JwtTokenProvider {
     @Value("\${app.jwt.refresh.expiration}")
     var refreshExpiration: Int = 0
 
-    fun generateToken(tokenUser: TokenUser): AuthResponse {
-        return AuthResponse(
-            generateAccessToken(tokenUser),
-            generateRefreshToken(tokenUser)
+    fun generateToken(userData: AuthResponse.UserData): Token {
+        return Token(
+            generateAccessToken(userData),
+            generateRefreshToken(userData)
         )
     }
 
-    private fun generateAccessToken(tokenUser: TokenUser): String {
+    private fun generateAccessToken(userData: AuthResponse.UserData): String {
         val currentDate = Date()
         val accessExpirationDate = Date(currentDate.time + accessExpiration)
 
         return Jwts.builder()
-            .setSubject(tokenUser.email)
+            .setSubject(userData.email)
             .setIssuedAt(currentDate)
             .setExpiration(accessExpirationDate)
             .setClaims(mapOf(
-                "userId" to tokenUser.id,
-                "orgId" to tokenUser.orgId,
-                "projectId" to tokenUser.projectId,
-                "role" to tokenUser.role,
-                "sub" to tokenUser.email
+                "userId" to userData.id,
+                "orgId" to userData.orgId,
+                "projectId" to userData.projectId,
+                "role" to userData.role,
+                "sub" to userData.email
             ))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact()
     }
 
-    private fun generateRefreshToken(tokenUser: TokenUser): String {
+    private fun generateRefreshToken(userData: AuthResponse.UserData): String {
         val currentDate = Date()
         val refreshExpirationDate = Date(currentDate.time + refreshExpiration)
 
         return Jwts.builder()
-            .setSubject(tokenUser.email)
+            .setSubject(userData.email)
             .setIssuedAt(currentDate)
             .setExpiration(refreshExpirationDate)
+            .setClaims(mapOf(
+                "sub" to userData.email,
+                "userId" to userData.id
+            ))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact()
     }
